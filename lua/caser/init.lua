@@ -27,6 +27,7 @@ local function separate_line(line)
 	local current = ""
 	local prev = ""
 
+	local i = 1
 	for v in line:gmatch(".") do
 		if vim.list_contains({ "_", " ", "-" }, v) then
 			table.insert(separated, current)
@@ -41,8 +42,12 @@ local function separate_line(line)
 			end
 
 			current = current .. v
-			prev = v
+			if i ~= 1 then
+				prev = v
+			end
 		end
+
+		i = i + 1
 	end
 	table.insert(separated, current)
 
