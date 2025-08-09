@@ -1,5 +1,9 @@
 local M = {}
 
+---@class Caser.Options
+---@field prefix string
+
+---@type Caser.Options
 M.options = {
 	prefix = "gs",
 }
@@ -227,7 +231,11 @@ local function space_callback(v)
 end
 _G.__caser_operatorfunc_space = space_callback
 
-function M.setup()
+---@param opts Caser.Options?
+function M.setup(opts)
+	opts = opts or {}
+	M.options = vim.tbl_deep_extend("force", M.options, opts)
+
 	vim.keymap.set("n", M.options.prefix .. "s", function()
 		vim.opt.operatorfunc = "v:lua.__caser_operatorfunc_snake"
 		return "g@"
