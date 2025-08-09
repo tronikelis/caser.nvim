@@ -10,7 +10,7 @@
 
 Change text casing with motions, text objects, visual mode.
 
-Essentially a lua port of [vim-caser](https://github.com/arthurxavierx/vim-caser)
+Essentially a lua port of [vim-caser](https://github.com/arthurxavierx/vim-caser).
 
 ## Installation
 
