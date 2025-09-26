@@ -1,13 +1,3 @@
-local M = {}
-
----@class Caser.Options
----@field prefix string
-
----@type Caser.Options
-M.options = {
-	prefix = "gs",
-}
-
 ---@param a string
 ---@param b string
 ---@return boolean
@@ -29,7 +19,7 @@ local function separate_line(line)
 
 	local i = 1
 	for v in line:gmatch(".") do
-		if vim.list_contains({ "_", " ", "-" }, v) then
+		if vim.list_contains({ "_", " ", "-", "." }, v) then
 			table.insert(separated, current)
 			current = ""
 		else
@@ -236,42 +226,95 @@ local function space_callback(v)
 end
 _G.__caser_operatorfunc_space = space_callback
 
----@param opts Caser.Options?
-function M.setup(opts)
-	opts = opts or {}
-	M.options = vim.tbl_deep_extend("force", M.options, opts)
-
-	vim.keymap.set("n", M.options.prefix .. "s", function()
-		vim.opt.operatorfunc = "v:lua.__caser_operatorfunc_snake"
-		return "g@"
-	end, { expr = true })
-	vim.keymap.set("v", M.options.prefix .. "s", function()
-		snake_set(mode_to_type(), { get_visual_marks() })
-	end, {})
-
-	vim.keymap.set("n", M.options.prefix .. "c", function()
-		vim.opt.operatorfunc = "v:lua.__caser_operatorfunc_camel"
-		return "g@"
-	end, { expr = true })
-	vim.keymap.set("v", M.options.prefix .. "c", function()
-		camel_set(mode_to_type(), { get_visual_marks() })
-	end)
-
-	vim.keymap.set("n", M.options.prefix .. "k", function()
-		vim.opt.operatorfunc = "v:lua.__caser_operatorfunc_kebab"
-		return "g@"
-	end, { expr = true })
-	vim.keymap.set("v", M.options.prefix .. "k", function()
-		kebab_set(mode_to_type(), { get_visual_marks() })
-	end)
-
-	vim.keymap.set("n", M.options.prefix .. " ", function()
-		vim.opt.operatorfunc = "v:lua.__caser_operatorfunc_space"
-		return "g@"
-	end, { expr = true })
-	vim.keymap.set("v", M.options.prefix .. " ", function()
-		space_set(mode_to_type(), { get_visual_marks() })
-	end)
+---@param type string
+---@param marks [integer, integer, integer, integer]
+local function dot_set(type, marks)
+	local lines = get_separated_lines(type, unpack(marks))
+	for _, line in ipairs(lines) do
+		local separate = separate_line(line[1])
+		local joined = table.concat(separate, ".")
+		nvim_buf_set_text(line[2], line[3], line[2], line[4], joined)
+	end
 end
 
-return M
+---@param v string
+local function dot_callback(v)
+	dot_set(v, { get_operator_marks() })
+end
+_G.__caser_operatorfunc_dot = dot_callback
+
+local plugs = {
+	n = {
+		snake = "<plug>(CaserNvimSnakeN)",
+		camel = "<plug>(CaserNvimCamelN)",
+		kebab = "<plug>(CaserNvimKebabN)",
+		space = "<plug>(CaserNvimSpaceN)",
+		dot = "<plug>(CaserNvimDotN)",
+	},
+	v = {
+		snake = "<plug>(CaserNvimSnakeV)",
+		camel = "<plug>(CaserNvimCamelV)",
+		kebab = "<plug>(CaserNvimKebabV)",
+		space = "<plug>(CaserNvimSpaceV)",
+		dot = "<plug>(CaserNvimDotV)",
+	},
+}
+
+vim.keymap.set("n", plugs.n.dot, function()
+	vim.opt.operatorfunc = "v:lua.__caser_operatorfunc_dot"
+	return "g@"
+end, { expr = true })
+vim.keymap.set("v", plugs.v.dot, function()
+	dot_set(mode_to_type(), { get_visual_marks() })
+end)
+
+vim.keymap.set("n", plugs.n.snake, function()
+	vim.opt.operatorfunc = "v:lua.__caser_operatorfunc_snake"
+	return "g@"
+end, { expr = true })
+vim.keymap.set("v", plugs.v.snake, function()
+	snake_set(mode_to_type(), { get_visual_marks() })
+end)
+
+vim.keymap.set("n", plugs.n.camel, function()
+	vim.opt.operatorfunc = "v:lua.__caser_operatorfunc_camel"
+	return "g@"
+end, { expr = true })
+vim.keymap.set("v", plugs.v.camel, function()
+	camel_set(mode_to_type(), { get_visual_marks() })
+end)
+
+vim.keymap.set("n", plugs.n.kebab, function()
+	vim.opt.operatorfunc = "v:lua.__caser_operatorfunc_kebab"
+	return "g@"
+end, { expr = true })
+vim.keymap.set("v", plugs.v.kebab, function()
+	kebab_set(mode_to_type(), { get_visual_marks() })
+end)
+
+vim.keymap.set("n", plugs.n.space, function()
+	vim.opt.operatorfunc = "v:lua.__caser_operatorfunc_space"
+	return "g@"
+end, { expr = true })
+vim.keymap.set("v", plugs.v.space, function()
+	space_set(mode_to_type(), { get_visual_marks() })
+end)
+
+local caser = require("caser")
+
+if #caser.options.prefix ~= 0 then
+	vim.keymap.set("n", caser.options.prefix .. "s", plugs.n.snake)
+	vim.keymap.set("v", caser.options.prefix .. "s", plugs.v.snake)
+
+	vim.keymap.set("n", caser.options.prefix .. "c", plugs.n.camel)
+	vim.keymap.set("v", caser.options.prefix .. "c", plugs.v.camel)
+
+	vim.keymap.set("n", caser.options.prefix .. "k", plugs.n.kebab)
+	vim.keymap.set("v", caser.options.prefix .. "k", plugs.v.kebab)
+
+	vim.keymap.set("n", caser.options.prefix .. " ", plugs.n.space)
+	vim.keymap.set("v", caser.options.prefix .. " ", plugs.v.space)
+
+	vim.keymap.set("n", caser.options.prefix .. ".", plugs.n.dot)
+	vim.keymap.set("v", caser.options.prefix .. ".", plugs.v.dot)
+end
