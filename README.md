@@ -14,14 +14,11 @@ Essentially a lua port of [vim-caser](https://github.com/arthurxavierx/vim-caser
 
 ## Installation
 
-lazy.nvim
+Install with your favorite plugin manager.
 
-```lua
-{
-    "tronikelis/caser.nvim",
-    opts = {}
-}
-```
+Do not lazy load this plugin, lazy loading is done automatically with a good plugin structure.
+
+If you want to change options call `.setup({})`, this will not load all plugin code, just the option changing part
 
 ## Usage
 
@@ -36,6 +33,7 @@ Case | Default Mapping
 `snake_case` | `gss` 
 `space case` | `gs<space>` 
 `kebab-case` | `gsk` 
+`dot.case`   | `gs.`
 
 ## Options
 
@@ -43,6 +41,7 @@ Default options are below.
 
 ```lua
 {
+    -- prefix = "" to disable default mappings
     prefix = "gs",
 }
 ```
