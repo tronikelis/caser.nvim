@@ -1,14 +1,14 @@
 local M = {}
 
----@class Caser.Options
+---@class CaserNvim.Options
 ---@field prefix string
 
----@type Caser.Options
+---@type CaserNvim.Options
 M.options = {
 	prefix = "gs",
 }
 
----@param opts Caser.Options?
+---@param opts CaserNvim.Options?
 function M.setup(opts)
 	opts = opts or {}
 	M.options = vim.tbl_deep_extend("force", M.options, opts)
