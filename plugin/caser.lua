@@ -80,17 +80,17 @@ local caser = require("caser")
 
 if #caser.options.prefix ~= 0 then
 	vim.keymap.set("n", caser.options.prefix .. "s", plugs.n.snake)
-	vim.keymap.set("v", caser.options.prefix .. "s", plugs.v.snake)
+	vim.keymap.set("x", caser.options.prefix .. "s", plugs.v.snake)
 
 	vim.keymap.set("n", caser.options.prefix .. "c", plugs.n.camel)
-	vim.keymap.set("v", caser.options.prefix .. "c", plugs.v.camel)
+	vim.keymap.set("x", caser.options.prefix .. "c", plugs.v.camel)
 
 	vim.keymap.set("n", caser.options.prefix .. "k", plugs.n.kebab)
-	vim.keymap.set("v", caser.options.prefix .. "k", plugs.v.kebab)
+	vim.keymap.set("x", caser.options.prefix .. "k", plugs.v.kebab)
 
 	vim.keymap.set("n", caser.options.prefix .. " ", plugs.n.space)
-	vim.keymap.set("v", caser.options.prefix .. " ", plugs.v.space)
+	vim.keymap.set("x", caser.options.prefix .. " ", plugs.v.space)
 
 	vim.keymap.set("n", caser.options.prefix .. ".", plugs.n.dot)
-	vim.keymap.set("v", caser.options.prefix .. ".", plugs.v.dot)
+	vim.keymap.set("x", caser.options.prefix .. ".", plugs.v.dot)
 end
