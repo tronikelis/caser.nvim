@@ -8,7 +8,7 @@ M.options = {
 	prefix = "gs",
 }
 
----@param opts CaserNvim.Options?
+---@param opts table?
 function M.setup(opts)
 	opts = opts or {}
 	M.options = vim.tbl_deep_extend("force", M.options, opts)
